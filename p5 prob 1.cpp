@@ -3,121 +3,51 @@ using namespace std;
 
 struct Node {
     string song;
-    Node* prev;
-    Node* next;
-    Node(string s) {
-        song = s;
-        prev = NULL;
-        next = NULL;
-    }
+    Node *prev, *next;
 };
-class Playlist {
-    Node* head;
-    Node* tail;
-public:
-    Playlist() {
-        head = NULL;
-        tail = NULL;
-    }
-    void addBeginning(string s) {
-        Node* n = new Node(s);
-        if (head == NULL) {
-            head = tail = n;
-        } else {
-            n->next = head;
-            head->prev = n;
-            head = n;
-        }
-    }
-    void addEnd(string s) {
-        Node* n = new Node(s);
-        if (head == NULL) {
-            head = tail = n;
-        } else {
-            tail->next = n;
-            n->prev = tail;
-            tail = n;
-        }
-    }
-    void insertAfter(string given, string s) {
-        Node* temp = head;
-        while (temp != NULL && temp->song != given)
-            temp = temp->next;
 
-        if (temp == NULL) {
-            cout << "Song not found: " << given << endl;
-            return;
-        }
-        Node* n = new Node(s);
-        n->next = temp->next;
-        n->prev = temp;
-        if (temp->next != NULL)
-            temp->next->prev = n;
-        else
-            tail = n;
-
-        temp->next = n;
-    }
-    void removeFirst() {
-        if (head == NULL)
-            return;
-
-        Node* temp = head;
-        head = head->next;
-
-        if (head != NULL)
-            head->prev = NULL;
-        else
-            tail = NULL;
-
-        delete temp;
-    }
-    void display() {
-        Node* temp = head;
-        cout << "Playlist: ";
-        while (temp != NULL) {
-            cout << temp->song << " ";
-            temp = temp->next;
-        }
-        cout << endl;
-        cout << "Number of songs: " << count() << endl;
-    }
-    int count() {
-        int c = 0;
-        Node* temp = head;
-        while (temp != NULL) {
-            c++;
-            temp = temp->next;
-        }
-        return c;
-    }
-};
 int main() {
-    Playlist p;
+    Node *head = NULL, *tail = NULL;
 
-    cout << "Adding song at beginning: Song A" << endl;
-    p.addBeginning("Song A");
-    p.display();
+    Node *a = new Node{"Song A", NULL, NULL};
+    head = tail = a;
+    cout << "Add at beginning: Song A" << endl;
 
-    cout << "Adding song at end: Song C" << endl;
-    p.addEnd("Song C");
-    p.display();
+    Node *b = new Node{"Song B", tail, NULL};
+    tail->next = b;
+    tail = b;
+    cout << "Add at end: Song B" << endl;
 
-    cout << "Adding song at beginning: Song B" << endl;
-    p.addBeginning("Song B");
-    p.display();
+    Node *c = new Node{"Song C", head, head->next};
+    head->next->prev = c;
+    head->next = c;
+    cout << "Insert Song C after Song A" << endl;
 
-    cout << "Inserting Song D after Song B" << endl;
-    p.insertAfter("Song B", "Song D");
-    p.display();
+    cout << "Playlist: ";
+    Node *t = head;
+    int count = 0;
+    while (t) {
+        cout << t->song << " ";
+        count++;
+        t = t->next;
+    }
+    cout << endl << "Count: " << count << endl;
 
-    cout << "Removing first song" << endl;
-    p.removeFirst();
-    p.display();
+    t = head;
+    head = head->next;
+    head->prev = NULL;
+    delete t;
 
-    cout << "Trying to insert Song E after Song X" << endl;
-    p.insertAfter("Song X", "Song E");
-    p.display();
+    cout << "Remove first song" << endl;
+    cout << "Playlist: ";
+    t = head;
+    count = 0;
+    while (t) {
+        cout << t->song << " ";
+        count++;
+        t = t->next;
+    }
+    cout << endl << "Count: " << count << endl;
 
     return 0;
 }
