@@ -1,86 +1,85 @@
 #include <iostream>
 using namespace std;
 
-struct Node {
+struct S {
     string name;
-    Node *next, *prev;
+    S *next;
 };
 
-class Circular {
-    Node* head = NULL;
-
-public:
-    void join(string s) {
-        Node* n = new Node{s, NULL, NULL};
-
-        if (!head) {
-            head = n;
-            n->next = n->prev = n;
-        } else {
-            Node* t = head->prev;
-            n->next = head;
-            n->prev = t;
-            t->next = n;
-            head->prev = n;
-        }
-    }
-
-    void leave(string s) {
-        if (!head) return;
-
-        Node* t = head;
-        do {
-            if (t->name == s) {
-                if (t->next == t)
-                    head = NULL;
-                else {
-                    t->prev->next = t->next;
-                    t->next->prev = t->prev;
-                    if (t == head) head = t->next;
-                }
-                delete t;
-                return;
-            }
-            t = t->next;
-        } while (t != head);
-    }
-
-    void display() {
-        if (!head) {
-            cout << "Circle is Empty" << endl;
-            return;
-        }
-
-        Node* t = head;
-        do {
-            cout << t->name << " ";
-            t = t->next;
-        } while (t != head);
-        cout << endl;
-    }
+struct D {
+    string name;
+    D *next, *prev;
 };
+
+void showS(S *h) {
+    S *t = h;
+    do {
+        cout << t->name << " ";
+        t = t->next;
+    } while (t != h);
+    cout << endl;
+}
+
+void showD(D *h) {
+    D *t = h;
+    do {
+        cout << t->name << " ";
+        t = t->next;
+    } while (t != h);
+    cout << endl;
+}
 
 int main() {
-    Circular c;
+    S *a = new S{"A", NULL};
+    S *b = new S{"B", NULL};
+    S *c = new S{"C", NULL};
+    a->next = b; b->next = c; c->next = a;
 
-    cout << "Students join: A B C D" << endl;
-    c.join("A");
-    c.join("B");
-    c.join("C");
-    c.join("D");
-    c.display();
+    D *x = new D{"A", NULL, NULL};
+    D *y = new D{"B", NULL, NULL};
+    D *z = new D{"C", NULL, NULL};
+    x->next = y; y->prev = x;
+    y->next = z; z->prev = y;
+    z->next = x; x->prev = z;
 
-    cout << "C leaves:" << endl;
-    c.leave("C");
-    c.display();
+    cout << "Singly: ";
+    showS(a);
+    cout << "Doubly: ";
+    showD(x);
 
-    cout << "A leaves:" << endl;
-    c.leave("A");
-    c.display();
+    cout << "B leaves" << endl;
 
-    cout << "E joins:" << endl;
-    c.join("E");
-    c.display();
+    a->next = c;
+    c->next = a;
+    delete b;
+
+    x->next = z;
+    z->prev = x;
+    z->next = x;
+    x->prev = z;
+    delete y;
+
+    cout << "Singly: ";
+    showS(a);
+    cout << "Doubly: ";
+    showD(x);
+
+    cout << "D joins" << endl;
+
+    b = new S{"D", a};
+    c->next = b;
+    b->next = a;
+
+    y = new D{"D", x, z};
+    z->next = y;
+    x->prev = y;
+    y->next = x;
+    y->prev = z;
+
+    cout << "Singly: ";
+    showS(a);
+    cout << "Doubly: ";
+    showD(x);
 
     return 0;
 }
