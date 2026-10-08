@@ -1,48 +1,76 @@
 #include <iostream>
-#include <stack>
+#include <string>
 using namespace std;
 
-int main() {
-    stack<string> pages;
-    string current = "Home";
+struct Node
+{
+    string page;
+    Node* next;
+};
 
-    cout << "Visit: Google" << endl;
-    pages.push(current);
-    current = "Google";
-    cout << "Current Page: " << current << endl;
+class Browser
+{
+    Node* top;
 
-    cout << "Visit: YouTube" << endl;
-    pages.push(current);
-    current = "YouTube";
-    cout << "Current Page: " << current << endl;
-
-    cout << "Visit: GitHub" << endl;
-    pages.push(current);
-    current = "GitHub";
-    cout << "Current Page: " << current << endl;
-
-    cout << "Back" << endl;
-    if (!pages.empty()) {
-        current = pages.top();
-        pages.pop();
+public:
+    Browser()
+    {
+        top = NULL;
     }
-    cout << "Current Page: " << current << endl;
 
-    cout << "Back" << endl;
-    if (!pages.empty()) {
-        current = pages.top();
-        pages.pop();
+    void visit(string page)
+    {
+        Node* newNode = new Node;
+        newNode->page = page;
+        newNode->next = top;
+        top = newNode;
     }
-    cout << "Current Page: " << current << endl;
 
-    cout << "Back" << endl;
-    if (!pages.empty()) {
-        current = pages.top();
-        pages.pop();
-    } else
-        cout << "No history left" << endl;
+    void back()
+    {
+        if (top == NULL)
+        {
+            cout << "No history left" << endl;
+            return;
+        }
 
-    cout << "Current Page: " << current << endl;
+        Node* temp = top;
+        top = top->next;
+        delete temp;
+    }
+
+    void currentPage()
+    {
+        if (top == NULL)
+            cout << "No page" << endl;
+        else
+            cout << top->page << endl;
+    }
+};
+
+int main()
+{
+    Browser b;
+
+    b.visit("Google");
+    b.currentPage();
+
+    b.visit("YouTube");
+    b.currentPage();
+
+    b.visit("GitHub");
+    b.currentPage();
+
+    b.back();
+    b.currentPage();
+
+    b.back();
+    b.currentPage();
+
+    b.back();
+    b.currentPage();
+
+    b.back();
 
     return 0;
 }
