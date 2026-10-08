@@ -1,33 +1,89 @@
 #include <iostream>
 using namespace std;
 
-int main() {
-    int stack[5], top = -1;
+class Stack
+{
+    int arr[100];
+    int top;
+    int n;
 
-    cout << "Stack Capacity: 5" << endl;
+public:
 
-    cout << "Place: 10" << endl;
-    if (top < 4) stack[++top] = 10;
-    else cout << "Error: Stack is Full" << endl;
-    cout << "Top: " << stack[top] << endl;
+    Stack(int size)
+    {
+        n = size;
+        top = -1;
+    }
 
-    cout << "Place: 20" << endl;
-    if (top < 4) stack[++top] = 20;
-    cout << "Top: " << stack[top] << endl;
+    void push(int tray)
+    {
+        if (top == n - 1)
+        {
+            cout << "Error: Stack is Full" << endl;
+            return;
+        }
 
-    cout << "Place: 30" << endl;
-    if (top < 4) stack[++top] = 30;
-    cout << "Top: " << stack[top] << endl;
+        top++;
+        arr[top] = tray;
 
-    cout << "Take" << endl;
-    if (top >= 0) top--;
-    else cout << "Error: Stack is Empty" << endl;
-    cout << "Top: " << (top >= 0 ? stack[top] : -1) << endl;
+        cout << "Placed: " << tray << endl;
+        cout << "Top Tray: " << arr[top] << endl;
+    }
 
-    cout << "Take" << endl;
-    if (top >= 0) top--;
-    else cout << "Error: Stack is Empty" << endl;
-    cout << "Top: " << (top >= 0 ? stack[top] : -1) << endl;
+    void pop()
+    {
+        if (top == -1)
+        {
+            cout << "Error: Stack is Empty" << endl;
+            return;
+        }
+
+        cout << "Taken: " << arr[top] << endl;
+        top--;
+
+        if (top == -1)
+            cout << "Top Tray: Empty" << endl;
+        else
+            cout << "Top Tray: " << arr[top] << endl;
+    }
+};
+
+int main()
+{
+    int n, operations;
+
+    cout << "Enter capacity: ";
+    cin >> n;
+
+    Stack s(n);
+
+    cout << "Enter number of operations: ";
+    cin >> operations;
+
+    for (int i = 0; i < operations; i++)
+    {
+        char choice;
+
+        cout << "Enter P for Place or T for Take: ";
+        cin >> choice;
+
+        if (choice == 'P' || choice == 'p')
+        {
+            int tray;
+            cout << "Enter tray number: ";
+            cin >> tray;
+
+            s.push(tray);
+        }
+        else if (choice == 'T' || choice == 't')
+        {
+            s.pop();
+        }
+        else
+        {
+            cout << "Invalid operation" << endl;
+        }
+    }
 
     return 0;
 }
