@@ -1,85 +1,185 @@
 #include <iostream>
 using namespace std;
 
-struct S {
+class Node
+{
+public:
     string name;
-    S *next;
+    Node* next;
+
+    Node(string x)
+    {
+        name = x;
+        next = NULL;
+    }
 };
 
-struct D {
-    string name;
-    D *next, *prev;
+class Circle
+{
+private:
+    Node* head;
+    Node* tail;
+
+public:
+
+    Circle()
+    {
+        head = NULL;
+        tail = NULL;
+    }
+
+    void addBeg(string name)
+    {
+        Node* newNode = new Node(name);
+
+        if (head == NULL)
+        {
+            head = newNode;
+            tail = newNode;
+            newNode->next = head;
+        }
+        else
+        {
+            newNode->next = head;
+            head = newNode;
+            tail->next = head;
+        }
+    }
+
+    void addEnd(string name)
+    {
+        Node* newNode = new Node(name);
+
+        if (head == NULL)
+        {
+            head = newNode;
+            tail = newNode;
+            newNode->next = head;
+        }
+        else
+        {
+            newNode->next = head;
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    void insertAfter(string target, string name)
+    {
+        if (head == NULL)
+            return;
+
+        Node* curr = head;
+
+        do
+        {
+            if (curr->name == target)
+            {
+                Node* newNode = new Node(name);
+
+                newNode->next = curr->next;
+                curr->next = newNode;
+
+                if (curr == tail)
+                    tail = newNode;
+
+                return;
+            }
+
+            curr = curr->next;
+
+        } while (curr != head);
+
+        cout << "Student not found." << endl;
+    }
+
+    void remove(string name)
+    {
+        if (head == NULL)
+        {
+            cout << "Circle is empty." << endl;
+            return;
+        }
+
+        Node* curr = head;
+        Node* prev = tail;
+
+        do
+        {
+            if (curr->name == name)
+            {
+                if (head == tail)
+                {
+                    head = NULL;
+                    tail = NULL;
+                }
+                else
+                {
+                    prev->next = curr->next;
+
+                    if (curr == head)
+                        head = curr->next;
+
+                    if (curr == tail)
+                        tail = prev;
+
+                    tail->next = head;
+                }
+
+                delete curr;
+                return;
+            }
+
+            prev = curr;
+            curr = curr->next;
+
+        } while (curr != head);
+
+        cout << "Student not found." << endl;
+    }
+
+    void display()
+    {
+        if (head == NULL)
+        {
+            cout << "Circle is empty." << endl;
+            return;
+        }
+
+        Node* curr = head;
+
+        do
+        {
+            cout << curr->name << " -> ";
+            curr = curr->next;
+
+        } while (curr != head);
+
+        cout << "(back to " << head->name << ")" << endl;
+    }
 };
 
-void showS(S *h) {
-    S *t = h;
-    do {
-        cout << t->name << " ";
-        t = t->next;
-    } while (t != h);
-    cout << endl;
-}
+int main()
+{
+    Circle c;
 
-void showD(D *h) {
-    D *t = h;
-    do {
-        cout << t->name << " ";
-        t = t->next;
-    } while (t != h);
-    cout << endl;
-}
+    c.addEnd("A");
+    c.display();
 
-int main() {
-    S *a = new S{"A", NULL};
-    S *b = new S{"B", NULL};
-    S *c = new S{"C", NULL};
-    a->next = b; b->next = c; c->next = a;
+    c.addEnd("B");
+    c.display();
 
-    D *x = new D{"A", NULL, NULL};
-    D *y = new D{"B", NULL, NULL};
-    D *z = new D{"C", NULL, NULL};
-    x->next = y; y->prev = x;
-    y->next = z; z->prev = y;
-    z->next = x; x->prev = z;
+    c.addEnd("C");
+    c.display();
 
-    cout << "Singly: ";
-    showS(a);
-    cout << "Doubly: ";
-    showD(x);
+    c.insertAfter("B", "D");
+    c.display();
 
-    cout << "B leaves" << endl;
+    c.remove("C");
+    c.display();
 
-    a->next = c;
-    c->next = a;
-    delete b;
-
-    x->next = z;
-    z->prev = x;
-    z->next = x;
-    x->prev = z;
-    delete y;
-
-    cout << "Singly: ";
-    showS(a);
-    cout << "Doubly: ";
-    showD(x);
-
-    cout << "D joins" << endl;
-
-    b = new S{"D", a};
-    c->next = b;
-    b->next = a;
-
-    y = new D{"D", x, z};
-    z->next = y;
-    x->prev = y;
-    y->next = x;
-    y->prev = z;
-
-    cout << "Singly: ";
-    showS(a);
-    cout << "Doubly: ";
-    showD(x);
+    c.remove("A");
+    c.display();
 
     return 0;
 }
