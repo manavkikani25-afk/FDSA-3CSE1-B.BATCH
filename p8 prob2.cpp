@@ -1,111 +1,51 @@
-#include<iostream>
-#include<queue>
+#include <iostream>
 using namespace std;
 
-struct Node{
+struct Node {
     int data;
-    Node*left;
-    Node*right;
+    Node *left, *right;
+
+    Node(int x) {
+        data = x;
+        left = right = NULL;
+    }
 };
 
-Node*createTree(){
-    int value;
-    cout<<"Enter root value (-1 for empty): ";
-    cin>>value;
+Node* insert(Node* root, int x) {
+    if (root == NULL)
+        return new Node(x);
 
-    if(value==-1)
-        return NULL;
-
-    Node*root=new Node{value,NULL,NULL};
-    queue<Node*>q;
-    q.push(root);
-
-    while(!q.empty()){
-        Node*current=q.front();
-        q.pop();
-
-        cout<<"Enter left child of "<<current->data<<" (-1 for none): ";
-        cin>>value;
-
-        if(value!=-1){
-            current->left=new Node{value,NULL,NULL};
-            q.push(current->left);
-        }
-
-        cout<<"Enter right child of "<<current->data<<" (-1 for none): ";
-        cin>>value;
-
-        if(value!=-1){
-            current->right=new Node{value,NULL,NULL};
-            q.push(current->right);
-        }
-    }
+    if (x < root->data)
+        root->left = insert(root->left, x);
+    else if (x > root->data)
+        root->right = insert(root->right, x);
 
     return root;
 }
 
-void inorder(Node*root){
-    if(root==NULL)
-        return;
-
+void inorder(Node* root) {
+    if (root == NULL) return;
     inorder(root->left);
-    cout<<root->data<<" ";
+    cout << root->data << " ";
     inorder(root->right);
 }
 
-void preorder(Node*root){
-    if(root==NULL)
-        return;
+int main() {
+    Node* root = NULL;
+    int n, x;
 
-    cout<<root->data<<" ";
-    preorder(root->left);
-    preorder(root->right);
-}
+    cout << "Enter number of nodes: ";
+    cin >> n;
 
-void postorder(Node*root){
-    if(root==NULL)
-        return;
-
-    postorder(root->left);
-    postorder(root->right);
-    cout<<root->data<<" ";
-}
-
-void levelOrder(Node*root){
-    if(root==NULL)
-        return;
-
-    queue<Node*>q;
-    q.push(root);
-
-    while(!q.empty()){
-        Node*current=q.front();
-        q.pop();
-
-        cout<<current->data<<" ";
-
-        if(current->left!=NULL)
-            q.push(current->left);
-
-        if(current->right!=NULL)
-            q.push(current->right);
+    for (int i = 0; i < n; i++) {
+        cout << "Enter value: ";
+        cin >> x;
+        root = insert(root, x);
     }
-}
 
-int main(){
-    Node*root=createTree();
-
-    cout<<"\nInorder: ";
+    cout << "Inorder traversal: ";
     inorder(root);
-
-    cout<<"\nPreorder: ";
-    preorder(root);
-
-    cout<<"\nPostorder: ";
-    postorder(root);
-
-    cout<<"\nLevel Order: ";
-    levelOrder(root);
+    cout << endl;
 
     return 0;
 }
