@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <stack>
 #include <string>
@@ -58,9 +57,11 @@ string infixToPostfix(string s) {
 
 int main() {
     string s;
-    cin >> s;
 
-    cout << infixToPostfix(s) << endl;
+    cout << "Infix: ";
+    getline(cin, s);
+
+    cout << "Postfix: " << infixToPostfix(s) << endl;
 
     return 0;
 }
